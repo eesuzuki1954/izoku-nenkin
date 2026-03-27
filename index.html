@@ -1,0 +1,79 @@
+<!DOCTYPE html>ファイル内容はこちらから入力してください
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>遺族年金シミュレーター</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="年金計算">
+    
+    <style>
+        :root { --main-color: #1a73e8; --bg-color: #f8f9fa; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h1 { font-size: 1.2rem; color: var(--main-color); text-align: center; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; padding: 15px; background-color: var(--main-color); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        #result { margin-top: 20px; padding: 15px; border-radius: 8px; background-color: #e8f0fe; display: none; }
+        .result-val { font-size: 1.5rem; font-weight: bold; color: #d93025; text-align: center; display: block; }
+        .note { font-size: 0.7rem; color: #666; margin-top: 10px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>遺族年金シミュレーター</h1>
+    
+    <div class="input-group">
+        <label>夫の報酬比例部分（年額：円）</label>
+        <input type="number" id="hoshu" value="1879920">
+    </div>
+
+    <div class="input-group">
+        <label>妻の基礎年金（年額：円）</label>
+        <input type="number" id="tsumaKiso" value="757992">
+    </div>
+
+    <div class="input-group">
+        <label>妻の厚生年金（年額：円）</label>
+        <input type="number" id="tsumaKosei" value="44400">
+    </div>
+
+    <button onclick="calculate()">計算実行</button>
+
+    <div id="result">
+        <label>妻の受取総額（年額・概算）</label>
+        <span class="result-val" id="total">--- 円</span>
+        <div class="note">
+            ※ 夫の報酬比例部分の3/4と妻の厚生年金の差額を上乗せして算出しています。<br>
+            ※ 中高齢寡婦加算などは含まれていません。
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const hoshu = parseFloat(document.getElementById('hoshu').value) || 0;
+        const tsumaKiso = parseFloat(document.getElementById('tsumaKiso').value) || 0;
+        const tsumaKosei = parseFloat(document.getElementById('tsumaKosei').value) || 0;
+
+        // 遺族厚生年金の計算（夫の3/4）
+        const izokuKoseiBase = hoshu * 0.75;
+        
+        // 妻の厚生年金との調整（差額分を算出）
+        const uwaneze = Math.max(0, izokuKoseiBase - tsumaKosei);
+        
+        // 合計額
+        const total = tsumaKiso + tsumaKosei + uwaneze;
+
+        document.getElementById('total').innerText = Math.round(total).toLocaleString() + " 円";
+        document.getElementById('result').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
